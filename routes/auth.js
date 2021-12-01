@@ -13,6 +13,7 @@ router.get("/", async (req, res) => {
     return res.status(500).json({ message: "Couldn't retrive the users" });
   }
 });
+
 router.post("/signup", async (req, res) => {
   const { email } = req.body;
   const testEmail = await User.findOne({ email });
@@ -44,7 +45,8 @@ router.post("/login", async (req, res) => {
   if (!validPassword) {
     return res.status(500).json({ message: "Check email and/or password" });
   }
-  return res.status(200).json(user);
+  const token = await generateJwt(user._id);
+  return res.status(200).json({ user, token });
 });
 
 router.get("/favorites/:id", async (req, res) => {
